@@ -10,6 +10,11 @@
         "pestphp/pest": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.0"
     },
+    "autoload-dev":{
+        "psr-4":{
+            "Dustov\\Quotes\\Tests\\": "tests/"
+        }
+    },
     "autoload": {
         "psr-4": {
             "Dustov\\Quotes\\": "src/"
