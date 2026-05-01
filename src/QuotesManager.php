@@ -32,6 +32,9 @@ class QuotesManager
 
     public function getQuote(int $id)
     {
+        if ($id <= 0) {
+            throw new \InvalidArgumentException("The ID must be a positive integer.");
+        }
 
         $this->rateLimiter->checkLimit('global_quotes_limit');
 
