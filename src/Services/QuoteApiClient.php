@@ -25,4 +25,18 @@ class QuoteApiClient
 
         return $response->json();
     }
+
+    public function fetchMany(int $limit = 30, int $skip = 0): array
+    {
+        $response = Http::timeout(3)->get($this->baseUrl, [
+            'limit' => $limit,
+            'skip' => $skip,
+        ]);
+
+        if ($response->failed()) {
+            throw new \Exception('Error fetching batch from API.');
+        }
+
+        return $response->json();
+    }
 }

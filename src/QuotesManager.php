@@ -45,7 +45,7 @@ class QuotesManager
         ]);
 
         $quotes = $cacheData['data'];
-        
+
         //search quotes in cache
         $quote = $this->searchService->search($quotes, $id);
 
@@ -69,5 +69,41 @@ class QuotesManager
         ], $this->cacheTtl);
 
         return $newQuote;
+    }
+
+    public function addBatch(array $newQuote): int
+    {
+        $cacheData = Cache::get('quotes_collection', [
+            'is_hydrated' => false,
+            'data' => []
+        ]);
+
+        $existingQuotes = $cacheData['data'];
+
+        //only extract the IDs 
+        $existingIds = array_column($existingQuotes, 'id');
+
+        $addedCount = 0;
+
+
+        foreach ($newQuote as $quote) {
+            //Only add it if the ID doesn't exist.
+            if (!in_array($quote['id'], $existingIds)) {
+                $existingQuotes[] = $quote;
+                $addedCount++;
+            }
+        }
+
+        if ($addedCount > 0) {
+            // Order by binary search
+            usort($existingQuotes, fn($a, $b) => $a['id'] <=> $b['id']);
+            
+            Cache::put('quotes_collection', [
+                'is_hydrated' => true,
+                'data' => $existingQuotes
+            ], $this->cacheTtl);
+        }
+
+        return $addedCount;
     }
 }

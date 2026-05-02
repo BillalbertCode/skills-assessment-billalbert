@@ -2,6 +2,7 @@
 
 namespace Dustov\Quotes;
 
+use Dustov\Quotes\Commands\BatchImportCommand;
 use Illuminate\Support\ServiceProvider;
 
 class QuotesServiceProvider extends ServiceProvider{
@@ -16,6 +17,10 @@ class QuotesServiceProvider extends ServiceProvider{
 
     public function boot(): void
     {
-        
+        if($this->app->runningInConsole()){
+            $this->commands([
+                BatchImportCommand::class,
+            ]);
+        }
     }
 }
