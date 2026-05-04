@@ -23,7 +23,7 @@ class QuotesManager
         $this->searchService = $searchService;
         $this->rateLimiter = $rateLimiter;
         $this->apiClient = $apiClient;
-        $this->cacheTtl = config('quotes.cache.ttl', 86400);
+        $this->cacheTtl = config('quotes.cache_ttl', 86400);
     }
 
     public function searchById(array $quotes, int $targetId): ?array
@@ -39,30 +39,23 @@ class QuotesManager
 
         $this->rateLimiter->checkLimit('global_quotes_limit');
 
-        //Watch Cache
-        $cacheData = Cache::get('quotes_collection', [
-            'is_hydrated' => false,
-            'data' => []
-        ]);
-
-        $quotes = $cacheData['data'];
+        $quotes = $this->getCachedQuotes();
 
         //search quotes in cache
         $quote = $this->searchService->search($quotes, $id);
 
-        if($quote){
+        if ($quote) {
             return $quote;
         };
 
         //API call, need new quote 
-
         $newQuote = $this->apiClient->fetchById($id);
 
         //add new quote
         $quotes[] = $newQuote;
 
         //sort quotes 
-        usort($quotes, fn($first,$second) => $first['id'] <=> $second['id']);
+        usort($quotes, fn($first, $second) => $first['id'] <=> $second['id']);
 
         Cache::put('quotes_collection', [
             'is_hydrated' => true,
@@ -74,18 +67,12 @@ class QuotesManager
 
     public function addBatch(array $newQuote): int
     {
-        $cacheData = Cache::get('quotes_collection', [
-            'is_hydrated' => false,
-            'data' => []
-        ]);
-
-        $existingQuotes = $cacheData['data'];
+        $existingQuotes = $this->getCachedQuotes();
 
         //only extract the IDs 
         $existingIds = array_column($existingQuotes, 'id');
 
         $addedCount = 0;
-
 
         foreach ($newQuote as $quote) {
             //Only add it if the ID doesn't exist.
@@ -121,6 +108,9 @@ class QuotesManager
     public function paginateQuotes(?int $page = null, ?int $perPage = null): LengthAwarePaginator
     {
         $quotes = $this->getCachedQuotes();
+
+        $page = max(1, $page ?? 1);
+        $perPage = max(1, $perPage ?? config('quotes.per_page_default', 10));
 
         return new LengthAwarePaginator(
             array_slice($quotes, ($page - 1) * $perPage, $perPage),
