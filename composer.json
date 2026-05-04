@@ -23,10 +23,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "dustov\\quotes\\QuotesServiceProvider"
+                "Dustov\\Quotes\\QuotesServiceProvider"
             ],
             "aliases": {
-                "Quotes": "dustov\\quotes\\Facades\\Quotes"
+                "Quotes": "Dustov\\Quotes\\Facades\\Quotes"
             }
         }
     },

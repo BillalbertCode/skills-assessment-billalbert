@@ -5,6 +5,7 @@ namespace Dustov\Quotes;
 use Dustov\Quotes\Services\BinarySearchService;
 use Dustov\Quotes\Services\QuoteApiClient;
 use Dustov\Quotes\Services\RateLimiterService;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
 class QuotesManager
@@ -97,7 +98,7 @@ class QuotesManager
         if ($addedCount > 0) {
             // Order by binary search
             usort($existingQuotes, fn($a, $b) => $a['id'] <=> $b['id']);
-            
+
             Cache::put('quotes_collection', [
                 'is_hydrated' => true,
                 'data' => $existingQuotes
@@ -105,5 +106,28 @@ class QuotesManager
         }
 
         return $addedCount;
+    }
+
+    public function getCachedQuotes(): array
+    {
+        $cacheData = Cache::get('quotes_collection', [
+            'is_hydrated' => false,
+            'data' => []
+        ]);
+
+        return $cacheData['data'];
+    }
+
+    public function paginateQuotes(?int $page = null, ?int $perPage = null): LengthAwarePaginator
+    {
+        $quotes = $this->getCachedQuotes();
+
+        return new LengthAwarePaginator(
+            array_slice($quotes, ($page - 1) * $perPage, $perPage),
+            count($quotes),
+            $perPage,
+            $page,
+            ['path' => request()->url()]
+        );
     }
 }
