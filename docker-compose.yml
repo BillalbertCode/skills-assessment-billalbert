@@ -1,0 +1,20 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: quotes-package-env
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/package
+      - laravel_host:/var/www
+    environment:
+      - APP_NAME=QuotesPackageTest
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8080
+    restart: unless-stopped
+
+volumes:
+  laravel_host:

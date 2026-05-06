@@ -1,0 +1,12 @@
+/vendor
+/node_modules
+/.env
+/.git
+/tests
+/.gitignore
+/.dockerignore
+/Dockerfile
+docker-compose*.yml
+/phpunit.xml
+/.editorconfig
+/README.md
