@@ -16,7 +16,7 @@ const handleSearch = () => {
 
 <template>
     <div class="search-container">
-        <input v-model="searchId" type="number" placeholder="Escribe un ID (ej: 50)..." @keyup.enter="handleSearch">
+        <input v-model="searchId" type="number" placeholder=" ID(eg: 50)..." @keyup.enter="handleSearch">
         <button @click="handleSearch">Buscar Cita</button>
     </div>
 </template>
@@ -44,7 +44,7 @@ input:focus {
 
 button {
     padding: 0.8rem 1.5rem;
-    background: #4f46e5;
+    background: #46e5d0;
     color: white;
     border: none;
     border-radius: 8px;
