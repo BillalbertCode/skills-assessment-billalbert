@@ -1,0 +1,27 @@
+{
+  "name": "skills-assessment-billalbert",
+  "version": "1.0.0",
+  "description": "- **Backend:** Laravel Package, PestPHP (Tests). - **Frontend:** Vue 3 (Composition API), TypeScript. - **Infraestructura:** Docker (Laravel host + Package link).",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.6",
+    "@vue/tsconfig": "^0.9.1",
+    "laravel-vite-plugin": "^3.1.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10",
+    "vue-tsc": "^3.2.8"
+  },
+  "dependencies": {
+    "vue": "^3.5.33"
+  }
+}
