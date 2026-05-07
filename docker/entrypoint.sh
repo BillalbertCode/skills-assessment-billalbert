@@ -31,22 +31,33 @@ cd $PACKAGE_DIR
 npm install --quiet
 npm run build --quiet
 
-# --- Linking and Registration in Host ---
+# Fix for Vite 5+ manifest location: Copy it from .vite/ to the root if necessary
+if [ -f "$PACKAGE_DIR/public/build/.vite/manifest.json" ]; then
+    cp "$PACKAGE_DIR/public/build/.vite/manifest.json" "$PACKAGE_DIR/public/build/manifest.json"
+fi
+
+# --- 3. Package Linking and Registration ---
 echo "Linking package to host..."
 cd $HOST_DIR
 
-# Create destination directory if it does not exist
-mkdir -p $HOST_DIR/public/vendor/quotes
+# 3.1 CRITICAL CONFIG: Tell Composer where the local package is located
+# This allows 'composer require' to find the package in the /package volume.
+composer config repositories.local-package '{"type": "path", "url": "/package", "options": {"symlink": true}}' --no-interaction
 
-# DEVELOPER TRICK: Instead of copying, create a symbolic link (Symlink)
-# This makes any change in /package/public visible INSTANTLY on the server
+# Require the package using the @dev stability flag for local development
+composer require "dustov/quotes:@dev" --no-interaction
+
+# 3.2 Assets: Create the destination folder and symlink the build directory
+# This ensures that compiled assets are accessible via the host's public path.
+mkdir -p $HOST_DIR/public/vendor/quotes
 rm -rf $HOST_DIR/public/vendor/quotes/build
 ln -s $PACKAGE_DIR/public/build $HOST_DIR/public/vendor/quotes/build
 
-# Require the package
-composer require "dustov/quotes:@dev" --no-interaction
+# 3.3 ROUTE REDIRECTION: Point the root URL '/' to the package UI
+# We use 'sed' to dynamically replace the default 'welcome' view with the package's index.
+sed -i "s/view('welcome')/view('quotes::index')/g" routes/web.php
 
-# --- Final Host Configuration ---
+# --- 4. Final Host Configuration ---
 if [ ! -f ".env" ]; then
     cp .env.example .env
 fi

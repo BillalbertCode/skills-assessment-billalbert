@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "watch": "vite build --watch",
     "build": "vue-tsc && vite build"
   },
   "keywords": [],

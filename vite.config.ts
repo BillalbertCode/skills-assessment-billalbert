@@ -6,8 +6,9 @@ export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/js/app.ts', 'resources/css/app.css'],
+            publicDirectory: 'public',
+            buildDirectory: 'build',
             refresh: true,
-
         }),
         vue({
             template: {
@@ -16,7 +17,6 @@ export default defineConfig({
                     includeAbsolute: false,
                 }
             }
-
         })
     ]
 })
