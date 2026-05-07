@@ -14,6 +14,7 @@ class QuotesManager
     protected RateLimiterService $rateLimiter;
     protected QuoteApiClient $apiClient;
     protected int $cacheTtl;
+    protected string $cacheStore;
 
     public function __construct(
         RateLimiterService $rateLimiter,
@@ -24,6 +25,7 @@ class QuotesManager
         $this->rateLimiter = $rateLimiter;
         $this->apiClient = $apiClient;
         $this->cacheTtl = config('quotes.cache_ttl', 86400);
+        $this->cacheStore = config('quotes.cache_store', config('cache.default'));
     }
 
     public function searchById(array $quotes, int $targetId): ?array
@@ -37,27 +39,26 @@ class QuotesManager
             throw new \InvalidArgumentException("The ID must be a positive integer.");
         }
 
-        $this->rateLimiter->checkLimit('global_quotes_limit');
-
         $quotes = $this->getCachedQuotes();
 
-        //search quotes in cache
-        $quote = $this->searchService->search($quotes, $id);
+        // Return immediately when the quote already exists in cache.
+        $cachedQuote = $this->searchService->search($quotes, $id);
+        if ($cachedQuote) {
+            return $cachedQuote;
+        }
 
-        if ($quote) {
-            return $quote;
-        };
+        $this->rateLimiter->checkLimit('global_quotes_limit');
 
-        //API call, need new quote 
+        // API call, need new quote
         $newQuote = $this->apiClient->fetchById($id);
 
-        //add new quote
+        // add new quote
         $quotes[] = $newQuote;
 
-        //sort quotes 
+        // sort quotes
         usort($quotes, fn($first, $second) => $first['id'] <=> $second['id']);
 
-        Cache::put('quotes_collection', [
+        $this->cache()->put('quotes_collection', [
             'is_hydrated' => true,
             'data' => $quotes
         ], $this->cacheTtl);
@@ -86,7 +87,7 @@ class QuotesManager
             // Order by binary search
             usort($existingQuotes, fn($a, $b) => $a['id'] <=> $b['id']);
 
-            Cache::put('quotes_collection', [
+            $this->cache()->put('quotes_collection', [
                 'is_hydrated' => true,
                 'data' => $existingQuotes
             ], $this->cacheTtl);
@@ -97,12 +98,17 @@ class QuotesManager
 
     public function getCachedQuotes(): array
     {
-        $cacheData = Cache::get('quotes_collection', [
+        $cacheData = $this->cache()->get('quotes_collection', [
             'is_hydrated' => false,
             'data' => []
         ]);
 
         return $cacheData['data'];
+    }
+
+    protected function cache()
+    {
+        return Cache::store($this->cacheStore);
     }
 
     public function paginateQuotes(?int $page = null, ?int $perPage = null): LengthAwarePaginator

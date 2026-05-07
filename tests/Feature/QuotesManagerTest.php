@@ -83,6 +83,25 @@ class QuotesManagerTest extends TestCase
     }
 
     #[Test]
+    public function it_returns_cached_quotes_even_when_rate_limit_is_exceeded()
+    {
+        config(['quotes.rate_limit.max_attempts' => 0]);
+        Cache::put('quotes_collection', [
+            'is_hydrated' => true,
+            'data' => [
+                ['id' => 1, 'quote' => 'Cached Quote', 'author' => 'Cached Author'],
+            ],
+        ]);
+
+        $manager = app(QuotesManager::class);
+
+        $result = $manager->getQuote(1);
+
+        expect($result['id'])->toBe(1);
+        expect($result['quote'])->toBe('Cached Quote');
+    }
+
+    #[Test]
     public function it_validates_that_id_is_positive()
     {
         $manager = app(QuotesManager::class);

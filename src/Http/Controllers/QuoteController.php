@@ -35,7 +35,7 @@ class QuoteController extends Controller
             $this->manager->paginateQuotes(
                 $request->integer('page', 1),
                 $request->integer('per_page', 10)
-            )
+            )->toArray()
         );
     }
 }

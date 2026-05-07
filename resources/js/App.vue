@@ -10,15 +10,18 @@ const searchResult = ref<Quote | null>(null);
 const pagination = ref<LaravelPaginator | null>(null);
 const isLoading = ref(false);
 const highlightedId = ref<number | null>(null);
+const currentPage = ref(1);
 
 const loadPage = async (page = 1) => {
     isLoading.value = true;
-    searchResult.value = null; 
+    searchResult.value = null;
     highlightedId.value = null;
+    currentPage.value = page;
+
     try {
         const response = await fetch(`/api/quotes?page=${page}`);
         const result: LaravelPaginator = await response.json();
-        
+
         quotes.value = result.data;
         pagination.value = result;
     } catch (error) {
@@ -35,16 +38,13 @@ const handleSearch = async (id: number) => {
         if (!response.ok) throw new Error();
 
         const result: Quote = await response.json();
+
+        // Always refresh the current page from the backend cache.
+        await loadPage(currentPage.value);
+
+        // Now set the search result to show the focus
         searchResult.value = result;
 
-        // Optimistic UI: Add to the table if not already there
-        const exists = quotes.value.some(q => q.id === result.id);
-        if (!exists) {
-            quotes.value.push(result);
-            // Re-sort to maintain ID order as required by the backend logic
-            quotes.value.sort((a, b) => a.id - b.id);
-        }
-        
         // Trigger highlight animation
         highlightedId.value = result.id;
         setTimeout(() => {

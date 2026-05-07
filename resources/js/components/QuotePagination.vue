@@ -44,16 +44,16 @@ const emit = defineEmits<{
     gap: 2rem;
     margin-top: 3rem;
     padding: 1rem;
-    background: white;
+    background: #f3f4f6;
     border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid #d1d5db;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
 }
 
 .nav-btn {
     padding: 0.6rem 1.2rem;
-    background: #4f46e5;
-    color: white;
+    background: #9ca3af;
+    color: #111827;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -66,14 +66,14 @@ const emit = defineEmits<{
 }
 
 .nav-btn:hover:not(:disabled) {
-    background: #4338ca;
+    background: #6b7280;
     transform: translateY(-1px);
-    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+    box-shadow: 0 4px 6px -1px rgba(17, 24, 39, 0.1);
 }
 
 .nav-btn:disabled {
     background: #e5e7eb;
-    color: #9ca3af;
+    color: #6b7280;
     cursor: not-allowed;
 }
 
@@ -87,14 +87,15 @@ const emit = defineEmits<{
 
 .current {
     font-weight: 700;
-    color: #111827;
+    color: #1f2937;
 }
 
 .divider {
-    color: #9ca3af;
+    color: #6b7280;
 }
 
 .total {
     font-weight: 600;
+    color: #374151;
 }
 </style>
