@@ -9,10 +9,12 @@ const quotes = ref<Quote[]>([]);
 const searchResult = ref<Quote | null>(null);
 const pagination = ref<LaravelPaginator | null>(null);
 const isLoading = ref(false);
+const highlightedId = ref<number | null>(null);
 
 const loadPage = async (page = 1) => {
     isLoading.value = true;
     searchResult.value = null; 
+    highlightedId.value = null;
     try {
         const response = await fetch(`/api/quotes?page=${page}`);
         const result: LaravelPaginator = await response.json();
@@ -34,6 +36,21 @@ const handleSearch = async (id: number) => {
 
         const result: Quote = await response.json();
         searchResult.value = result;
+
+        // Optimistic UI: Add to the table if not already there
+        const exists = quotes.value.some(q => q.id === result.id);
+        if (!exists) {
+            quotes.value.push(result);
+            // Re-sort to maintain ID order as required by the backend logic
+            quotes.value.sort((a, b) => a.id - b.id);
+        }
+        
+        // Trigger highlight animation
+        highlightedId.value = result.id;
+        setTimeout(() => {
+            highlightedId.value = null;
+        }, 3000);
+
     } catch {
         alert("Quote not found!");
     } finally {
@@ -43,6 +60,7 @@ const handleSearch = async (id: number) => {
 
 const clearSearch = () => {
     searchResult.value = null;
+    highlightedId.value = null;
 };
 
 onMounted(() => loadPage());
@@ -59,15 +77,15 @@ onMounted(() => loadPage());
             <QuoteSearch @search="handleSearch" />
 
             <div v-if="isLoading" class="loading-state">
-                Loading data...
+                Processing...
             </div>
 
             <div v-else class="list-container">
-                <!-- Search Result Section -->
+                <!-- Search Result Focus -->
                 <div v-if="searchResult" class="search-highlight">
                     <div class="search-header">
-                        <h3>Search Result:</h3>
-                        <button class="clear-btn" @click="clearSearch">Clear Result</button>
+                        <h3>Focused Quote:</h3>
+                        <button class="clear-btn" @click="clearSearch">Clear Focus</button>
                     </div>
                     <QuoteCard :quote="searchResult" />
                     <hr class="separator">
@@ -76,7 +94,7 @@ onMounted(() => loadPage());
                 <!-- Main Quotes Table -->
                 <section class="table-section">
                     <h3 class="section-title">
-                        {{ searchResult ? 'Available Quotes:' : 'All Inspirational Quotes' }}
+                        {{ searchResult ? 'Quotes in Context:' : 'Inspirational Quotes' }}
                     </h3>
                     
                     <div class="table-responsive">
@@ -89,9 +107,16 @@ onMounted(() => loadPage());
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="q in quotes" :key="q.id">
+                                <tr 
+                                    v-for="q in quotes" 
+                                    :key="q.id"
+                                    :class="{ 'row-highlight': highlightedId === q.id }"
+                                >
                                     <td class="col-id">#{{ q.id }}</td>
-                                    <td class="col-quote">"{{ q.quote }}"</td>
+                                    <td class="col-quote">
+                                        "{{ q.quote }}"
+                                        <span v-if="highlightedId === q.id" class="new-badge">JUST FOUND</span>
+                                    </td>
                                     <td class="col-author">{{ q.author }}</td>
                                 </tr>
                                 <tr v-if="quotes.length === 0 && !searchResult">
@@ -243,13 +268,32 @@ body {
     color: #334155;
     border-bottom: 1px solid #f1f5f9;
     vertical-align: top;
+    transition: background-color 0.5s ease;
+}
+
+/* Animation for the "Optimistic" row */
+.row-highlight td {
+    background-color: #fef9c3 !important; /* Soft yellow */
+    border-bottom-color: #fde047;
+}
+
+.new-badge {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    background: #fde047;
+    color: #854d0e;
+    font-size: 0.65rem;
+    font-weight: 800;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
 }
 
 .quotes-table tr:last-child td {
     border-bottom: none;
 }
 
-.quotes-table tr:hover td {
+.quotes-table tr:hover td:not(.row-highlight td) {
     background-color: #f8fafc;
 }
 

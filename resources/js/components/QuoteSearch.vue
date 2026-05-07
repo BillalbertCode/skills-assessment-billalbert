@@ -17,7 +17,7 @@ const handleSearch = () => {
 <template>
     <div class="search-container">
         <input v-model="searchId" type="number" placeholder=" ID(eg: 50)..." @keyup.enter="handleSearch">
-        <button @click="handleSearch">Buscar Cita</button>
+        <button @click="handleSearch">Search Quote</button>
     </div>
 </template>
 
@@ -31,30 +31,33 @@ const handleSearch = () => {
 input {
     flex: 1;
     padding: 0.8rem;
-    border: 2px solid #e5e7eb;
+    border: 2px solid #cbd5e1;
     border-radius: 8px;
+    background: #f8fafc;
+    color: #334155;
     font-size: 1rem;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background-color 0.2s;
 }
 
 input:focus {
     outline: none;
-    border-color: #4f46e5;
+    border-color: #94a3b8;
+    background: #eff2f7;
 }
 
 button {
     padding: 0.8rem 1.5rem;
-    background: #46e5d0;
-    color: white;
+    background: #64748b;
+    color: #f8fafc;
     border: none;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition:
-        background 0.2s;
+    transition: background 0.2s, transform 0.2s;
 }
 
 button:hover {
-    background: #4338ca;
+    background: #475569;
+    transform: translateY(-1px);
 }
 </style>
