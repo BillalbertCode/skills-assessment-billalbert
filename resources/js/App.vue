@@ -179,17 +179,17 @@ body {
 .loading-state {
     text-align: center;
     padding: 3rem;
-    color: #4f46e5;
+    color: #808080;
     font-weight: bold;
     font-size: 1.25rem;
 }
 
 .search-highlight {
-    background: #eef2ff;
+    background: #f5f5f5;
     padding: 1.5rem;
     border-radius: 12px;
     margin-bottom: 2.5rem;
-    border: 1px solid #c7d2fe;
+    border: 1px solid #d3d3d3;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
@@ -202,13 +202,13 @@ body {
 
 .search-header h3 {
     margin: 0;
-    color: #3730a3;
+    color: #404040;
     font-size: 1.1rem;
     font-weight: 700;
 }
 
 .clear-btn {
-    background: #ef4444;
+    background: #a9a9a9;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -220,17 +220,17 @@ body {
 }
 
 .clear-btn:hover {
-    background: #dc2626;
+    background: #696969;
 }
 
 .separator {
     border: 0;
-    border-top: 1px solid #c7d2fe;
+    border-top: 1px solid #d3d3d3;
     margin: 1.5rem 0;
 }
 
 .section-title {
-    color: #374151;
+    color: #404040;
     font-size: 1.25rem;
     margin-bottom: 1.5rem;
     font-weight: 700;
@@ -242,7 +242,7 @@ body {
     background: white;
     border-radius: 12px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e0e0e0;
 }
 
 .quotes-table {
@@ -252,36 +252,36 @@ body {
 }
 
 .quotes-table th {
-    background: #f8fafc;
+    background: #f9f9f9;
     padding: 1rem;
     font-size: 0.875rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #64748b;
-    border-bottom: 1px solid #e5e7eb;
+    color: #808080;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .quotes-table td {
     padding: 1.25rem 1rem;
     font-size: 0.95rem;
-    color: #334155;
-    border-bottom: 1px solid #f1f5f9;
+    color: #404040;
+    border-bottom: 1px solid #f5f5f5;
     vertical-align: top;
     transition: background-color 0.5s ease;
 }
 
 /* Animation for the "Optimistic" row */
 .row-highlight td {
-    background-color: #fef9c3 !important; /* Soft yellow */
-    border-bottom-color: #fde047;
+    background-color: #e0e0e0 !important; /* Soft gray */
+    border-bottom-color: #d3d3d3;
 }
 
 .new-badge {
     display: inline-block;
     padding: 0.1rem 0.4rem;
-    background: #fde047;
-    color: #854d0e;
+    background: #d3d3d3;
+    color: #404040;
     font-size: 0.65rem;
     font-weight: 800;
     border-radius: 4px;
@@ -294,12 +294,12 @@ body {
 }
 
 .quotes-table tr:hover td:not(.row-highlight td) {
-    background-color: #f8fafc;
+    background-color: #f9f9f9;
 }
 
 .col-id {
     width: 80px;
-    color: #64748b;
+    color: #808080;
     font-weight: 600;
 }
 
@@ -311,12 +311,12 @@ body {
 .col-author {
     width: 180px;
     font-weight: 600;
-    color: #475569;
+    color: #696969;
 }
 
 .empty-row {
     text-align: center;
     padding: 3rem !important;
-    color: #94a3b8;
+    color: #a9a9a9;
 }
 </style>
